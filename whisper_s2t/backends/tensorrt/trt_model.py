@@ -150,7 +150,7 @@ class WhisperDecoding:
 
         # get the list of int from output_ids tensor
         output_ids = output_ids.cpu().numpy().tolist()
-        print(output_ids[:5])
+        # print(output_ids[:5])
         return output_ids
 
 

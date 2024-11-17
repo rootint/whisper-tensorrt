@@ -272,7 +272,7 @@ class WhisperModelTRT(WhisperModel):
                     "text": texts[idx].strip(),
                     "tokens": [x for x in result[0][0] if x < 50257],
                     "temperature": self.asr_options["sampling_temperature"],
-                    "language_id": result[0][0][:5],
+                    # "language_id": result[0][0][:5],
                     "seek": 0,
                     "avg_logprob": self.asr_options["log_prob_threshold"],
                     "compression_ratio": self.asr_options[
