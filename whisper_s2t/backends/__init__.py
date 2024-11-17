@@ -141,7 +141,8 @@ class WhisperModel(ABC):
 
         # return responses
 
-        lang_codes = fix_batch_param(lang_codes, "en", len(audio_files))
+        # lang_codes = fix_batch_param(lang_codes, "en", len(audio_files))
+        # lang_codes = [None]
         tasks = fix_batch_param(tasks, "transcribe", len(audio_files))
         initial_prompts = fix_batch_param(initial_prompts, None, len(audio_files))
 
@@ -170,8 +171,8 @@ class WhisperModel(ABC):
                 responses[_seg_metadata["file_id"]].append(
                     {
                         **res[res_idx],
-                        "start_time": round(_seg_metadata["start_time"], 3),
-                        "end_time": round(_seg_metadata["end_time"], 3),
+                        "start": _seg_metadata["start_time"],
+                        "end": _seg_metadata["end_time"],
                     }
                 )
 

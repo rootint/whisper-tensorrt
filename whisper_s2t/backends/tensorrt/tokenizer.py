@@ -67,21 +67,26 @@ class Tokenizer:
         sequence = [self.sot]
         
         if self.multilingual:
-            sequence.append(self.lang_code_to_token_id[lang])
+            if lang is not None:
+                sequence.append(self.lang_code_to_token_id[lang])
+            # else:
+            #     sequence.append()
             sequence.append(self.task_to_token_id[task])
 
         return sequence
 
     def encode(self, text):
-        return self.tokenizer.encode(text, add_special_tokens=False).ids
+        return self.tokenizer.encode(text, add_special_tokens=True).ids
 
     def decode(self, tokens):
         text_tokens = [token for token in tokens if token < self.eot]
+        # text_tokens = [token for token in tokens]
         return self.tokenizer.decode(text_tokens)
     
     def decode_batch(self, tokens):
         res = []
         for tk in tokens:
+            # res.append([token for token in tk])
             res.append([token for token in tk if token < self.eot])
 
         return self.tokenizer.decode_batch(res)
