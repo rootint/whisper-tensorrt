@@ -66,7 +66,7 @@ class WhisperModelTRT(WhisperModel):
                  num_workers=1,
                  device="cuda",
                  device_index=0,
-                 compute_type="float16",
+                 compute_type="bfloat16",
                  max_text_token_len=MAX_TEXT_TOKEN_LENGTH,
                  asr_options={},
                  **model_kwargs):
