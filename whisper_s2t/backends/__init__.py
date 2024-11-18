@@ -143,6 +143,7 @@ class WhisperModel(ABC):
 
         # lang_codes = fix_batch_param(lang_codes, "en", len(audio_files))
         # lang_codes = [None]
+
         tasks = fix_batch_param(tasks, "transcribe", len(audio_files))
         initial_prompts = fix_batch_param(initial_prompts, None, len(audio_files))
 
@@ -164,7 +165,11 @@ class WhisperModel(ABC):
         ):
             mels, seq_len = self.preprocessor(signals, seq_len)
             res = self.generate_segment_batched(
-                mels.to(self.device), prompts, seq_len, seg_metadata
+                mels.to(self.device),
+                prompts,
+                seq_len,
+                seg_metadata,
+                lang_codes,
             )
 
             for res_idx, _seg_metadata in enumerate(seg_metadata):

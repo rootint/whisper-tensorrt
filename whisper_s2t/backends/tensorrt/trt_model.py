@@ -150,7 +150,6 @@ class WhisperDecoding:
 
         # get the list of int from output_ids tensor
         output_ids = output_ids.cpu().numpy().tolist()
-        # print(output_ids[:5])
         return output_ids
 
 
@@ -173,9 +172,20 @@ class WhisperTRT:
             mel.type(str_dtype_to_torch(self.compute_type))
         )
 
-    def generate(self, features, prompts, **generate_kwargs):
+    def generate(self, features, prompts, decoder_input_ids=None, **generate_kwargs):
+        """
+        decoder_input_ids are needed for automatic language detection. When I pass that weird thing, it detects the language
+        """
         if features.shape[1] == self.n_mels:
             features = self.encode(features)
+
+        if decoder_input_ids is not None:
+            sampling_config = SamplingConfig(**generate_kwargs)
+
+            output_ids = self.decoder.generate(
+                decoder_input_ids, features, sampling_config
+            )
+            return output_ids
 
         decoder_input_ids = torch.tensor(prompts)
 
