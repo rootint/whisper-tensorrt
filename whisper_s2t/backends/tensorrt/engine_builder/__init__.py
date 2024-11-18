@@ -14,7 +14,7 @@ from ....utils import RunningStatus
 class TRTBuilderConfig:
     def __init__(
         self,
-        max_batch_size=128,
+        max_batch_size=96,
         max_beam_width=5,
         max_input_len=4,
         max_output_len=448,

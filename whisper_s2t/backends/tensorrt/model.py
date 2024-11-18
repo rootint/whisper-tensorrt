@@ -15,8 +15,8 @@ from ...configs import *
 
 
 SPECIAL_TOKENS_MAP = {
-    50257: "<|endoftext|>",
-    50258: "<|startoftranscript|>",
+    50257: "<|unknown|>",
+    50258: "<|unknown|>",
     50259: "<|en|>",
     50260: "<|zh|>",
     50261: "<|de|>",
@@ -117,12 +117,12 @@ SPECIAL_TOKENS_MAP = {
     50356: "<|jw|>",
     50357: "<|su|>",
     50358: "<|yue|>",
-    50359: "<|translate|>",
-    50360: "<|transcribe|>",
-    50361: "<|startoflm|>",
-    50362: "<|startofprev|>",
-    50363: "<|nospeech|>",
-    50364: "<|notimestamps|>",
+    50359: "<|unknown|>",
+    50360: "<|unknown|>",
+    50361: "<|unknown|>",
+    50362: "<|unknown|>",
+    50363: "<|unknown|>",
+    50364: "<|unknown|>",
 }
 
 
@@ -150,9 +150,9 @@ FAST_ASR_OPTIONS = {
 
 
 BEST_ASR_CONFIG = {
-    "beam_size": 5,
+    "beam_size": 2,
     "best_of": 1,  # Placeholder
-    "patience": 2,
+    "patience": 1,
     "length_penalty": 1,
     "repetition_penalty": 1.01,
     "no_repeat_ngram_size": 0,
@@ -187,7 +187,7 @@ class WhisperModelTRT(WhisperModel):
     ):
 
         # ASR Options
-        self.asr_options = FAST_ASR_OPTIONS
+        self.asr_options = BEST_ASR_CONFIG
         self.asr_options.update(asr_options)
 
         # Get local model path or build a new engine
@@ -381,6 +381,7 @@ class WhisperModelTRT(WhisperModel):
                 **self.generate_kwargs,
             )
         else:
+            # print("len here!", len(features))
             result = self.model.generate(
                 features,
                 prompts,
@@ -389,6 +390,7 @@ class WhisperModelTRT(WhisperModel):
                 ),
                 **self.generate_kwargs,
             )
+        # print(result)
 
         texts = self.tokenizer.decode_batch([x[0] for x in result])
 
@@ -407,10 +409,10 @@ class WhisperModelTRT(WhisperModel):
             response.append(
                 {
                     "text": texts[idx].strip(),
-                    "tokens": [x for x in result[0][0] if x < 50257],
+                    "tokens": [x for x in result[idx][0] if x < 50257],
                     "temperature": self.asr_options["sampling_temperature"],
                     "language": (
-                        SPECIAL_TOKENS_MAP[result[0][0][1]]
+                        SPECIAL_TOKENS_MAP[result[idx][0][1]]
                         .replace("<|", "")
                         .replace("|>", "")
                         if lang_codes[0] is None
