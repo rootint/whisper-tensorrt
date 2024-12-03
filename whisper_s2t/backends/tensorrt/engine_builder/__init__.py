@@ -16,9 +16,11 @@ class TRTBuilderConfig:
         self,
         max_batch_size=96,
         max_beam_width=5,
+        # TODO: to allow prompts, this value should be increased
         max_input_len=4,
         max_output_len=448,
         world_size=1,
+        # TODO: :)
         dtype="float16",
         quantize_dir="quantize/1-gpu",
         use_gpt_attention_plugin="float16",

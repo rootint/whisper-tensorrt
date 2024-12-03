@@ -85,6 +85,7 @@ class WhisperModel(ABC):
 
         # Load Pre Processor
         self.preprocessor = LogMelSpectogram(n_mels=self.n_mels).to(self.device)
+        self.aligner_preprocessor = LogMelSpectogram(n_mels=80).to(self.device)
 
         # Load Speech Segmenter
         self.speech_segmenter = SpeechSegmenter(
@@ -164,12 +165,14 @@ class WhisperModel(ABC):
             use_vad=False,
         ):
             mels, seq_len = self.preprocessor(signals, seq_len)
+            aligner_mels, _ = self.aligner_preprocessor(signals, seq_len)
             res = self.generate_segment_batched(
                 mels.to(self.device),
                 prompts,
                 seq_len,
                 seg_metadata,
                 lang_codes,
+                aligner_features=aligner_mels.to(self.device),
             )
 
             for res_idx, _seg_metadata in enumerate(seg_metadata):
